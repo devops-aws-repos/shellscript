@@ -18,14 +18,14 @@ do
     IP_ADDRESS=$(aws ec2 run-instances --image-id ami-05ffe3c48a9991133 --instance-type $INSTANCE_TYPE --security-group-ids sg-050ef4889bc4a5a82 --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$i}]" --query Instances[0].PrivateIpAddress --output text)
     echo "$i: $IP_ADDRESS"
 
-    ##### Route53 records creation using shell, make sure whether existing records are deleted or not
+     #create R53 record, make sure you delete existing record
     aws route53 change-resource-record-sets \
     --hosted-zone-id $ZONE_ID \
     --change-batch '
     {
         "Comment": "Creating a record set for cognito endpoint"
         ,"Changes": [{
-        "Action"              : "CREATE"
+        "Action"              : "UPSERT"
         ,"ResourceRecordSet"  : {
             "Name"              : "'$i'.'$DOMAIN_NAME'"
             ,"Type"             : "A"
@@ -36,5 +36,6 @@ do
         }
         }]
     }
+        '
 
 done
