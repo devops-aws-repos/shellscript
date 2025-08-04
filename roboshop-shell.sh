@@ -1,6 +1,6 @@
 #!/bin/bash
 
-AMI=ami-05ffe3c48a9991133
+AMI=ami-0b4f379183e5706b9
 SG_ID=sg-050ef4889bc4a5a82
 INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "cart" "user" "shipping" "payment" "web")
 ZONE_ID=Z09641331NSUBKHNJR0CM
@@ -15,7 +15,7 @@ do
         INSTANCE_TYPE="t2.micro"
     fi
 
-    IP_ADDRESS=$(aws ec2 run-instances --image-id ami-05ffe3c48a9991133 --instance-type $INSTANCE_TYPE --security-group-ids sg-050ef4889bc4a5a82 --subnet-id subnet-0bfd3c097b97c41a5 --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$i}]" --query Instances[0].PrivateIpAddress --output text)
+    IP_ADDRESS=$(aws ec2 run-instances --image-id $AMI --instance-type $INSTANCE_TYPE --security-group-ids sg-050ef4889bc4a5a82 --subnet-id subnet-0bfd3c097b97c41a5 --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$i}]" --query Instances[0].PrivateIpAddress --output text)
     echo "$i: $IP_ADDRESS"
 
      #create R53 record, make sure you delete existing record
